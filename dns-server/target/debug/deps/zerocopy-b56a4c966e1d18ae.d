@@ -1,0 +1,12 @@
+/home/belle/job-practice/dns-server/dns-server/target/debug/deps/libzerocopy-b56a4c966e1d18ae.rmeta: /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/lib.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/macros.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/byteorder.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/macro_util.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/post_monomorphization_compile_fail_tests.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/util.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/third_party/rust/layout.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/wrappers.rs
+
+/home/belle/job-practice/dns-server/dns-server/target/debug/deps/zerocopy-b56a4c966e1d18ae.d: /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/lib.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/macros.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/byteorder.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/macro_util.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/post_monomorphization_compile_fail_tests.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/util.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/third_party/rust/layout.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/wrappers.rs
+
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/lib.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/macros.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/byteorder.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/macro_util.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/post_monomorphization_compile_fail_tests.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/util.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/third_party/rust/layout.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/zerocopy-0.7.35/src/wrappers.rs:

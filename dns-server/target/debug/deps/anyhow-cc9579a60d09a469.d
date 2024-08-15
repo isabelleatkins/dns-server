@@ -1,0 +1,15 @@
+/home/belle/job-practice/dns-server/dns-server/target/debug/deps/libanyhow-cc9579a60d09a469.rmeta: /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/lib.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/backtrace.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/chain.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/context.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/ensure.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/error.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/fmt.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/kind.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/macros.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/ptr.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/wrapper.rs
+
+/home/belle/job-practice/dns-server/dns-server/target/debug/deps/anyhow-cc9579a60d09a469.d: /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/lib.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/backtrace.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/chain.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/context.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/ensure.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/error.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/fmt.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/kind.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/macros.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/ptr.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/wrapper.rs
+
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/lib.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/backtrace.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/chain.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/context.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/ensure.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/error.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/fmt.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/kind.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/macros.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/ptr.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/anyhow-1.0.86/src/wrapper.rs:

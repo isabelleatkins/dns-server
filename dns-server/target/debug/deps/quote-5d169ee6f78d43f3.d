@@ -1,0 +1,13 @@
+/home/belle/job-practice/dns-server/dns-server/target/debug/deps/libquote-5d169ee6f78d43f3.rmeta: /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/lib.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/ext.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/format.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/ident_fragment.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/to_tokens.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/runtime.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/spanned.rs
+
+/home/belle/job-practice/dns-server/dns-server/target/debug/deps/libquote-5d169ee6f78d43f3.rlib: /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/lib.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/ext.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/format.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/ident_fragment.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/to_tokens.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/runtime.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/spanned.rs
+
+/home/belle/job-practice/dns-server/dns-server/target/debug/deps/quote-5d169ee6f78d43f3.d: /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/lib.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/ext.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/format.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/ident_fragment.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/to_tokens.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/runtime.rs /opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/spanned.rs
+
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/lib.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/ext.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/format.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/ident_fragment.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/to_tokens.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/runtime.rs:
+/opt/rust/registry/src/pkgs.dev.azure.com-e0c0cdb449acd559/quote-1.0.36/src/spanned.rs:

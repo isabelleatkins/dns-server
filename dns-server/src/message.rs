@@ -1,6 +1,7 @@
-use std::{fmt, path::Display};
-
+use anyhow::anyhow;
+use anyhow::Error;
 use bytes::{BufMut, BytesMut};
+use std::{fmt, path::Display};
 
 #[derive(Debug)]
 pub struct DnsMessage {
@@ -10,11 +11,11 @@ pub struct DnsMessage {
 }
 
 impl DnsMessage {
-    pub fn new(request: &[u8]) -> DnsMessage {
+    pub fn answer(request: &[u8]) -> DnsMessage {
         DnsMessage {
             header: Header::from_request(request),
             question: Question::from_request(request),
-            answer: None, //TODO
+            answer: Answer::from_request(request), //TODO
         }
     }
     pub fn write(&self, buf: &mut BytesMut) {
@@ -255,14 +256,88 @@ struct Answer {
 struct ResourceRecord {
     name: Name,
     r#type: RrType,
-    class: u16, // Turn this into a type see section 3.2.4
+    class: Class, // Turn this into a type see section 3.2.4
     ttl: u32,
     rdlength: u16,
     rdata: Vec<u8>, //Make this an actual type when looked into more
 }
 
 #[derive(Debug)]
-enum RrType {}
+pub enum Class {
+    IN = 1,
+}
+
+impl TryFrom<&str> for Class {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        match value {
+            "IN" => Ok(Class::IN),
+            _ => Err("Invalid Class"),
+        }
+    }
+}
+
+pub trait Record {
+    fn into_resource_record(self) -> ResourceRecord;
+}
 
 #[derive(Debug)]
-struct Name(String);
+pub struct ARecord {
+    pub name: Name,
+    class: Class,
+    ttl: u32,
+    address: Ipv4Address,
+}
+
+impl ARecord {
+    pub fn new(name: Name, class: Class, ttl: u32, address: Ipv4Address) -> ARecord {
+        ARecord {
+            name,
+            class: Class::IN,
+            ttl,
+            address,
+        }
+    }
+}
+
+impl Record for ARecord {
+    fn into_resource_record(self) -> ResourceRecord {
+        ResourceRecord {
+            name: self.name,
+            r#type: RrType::A,
+            class: self.class,
+            ttl: self.ttl,
+            rdlength: 4,
+            rdata: self.address.0.to_vec(),
+        }
+    }
+}
+#[derive(Debug)]
+enum RrType {
+    A,
+}
+
+#[derive(Debug)]
+pub struct Name(String);
+
+impl Name {
+    pub fn new(name: &str) -> Name {
+        Name(name.to_string())
+    }
+}
+
+#[derive(Debug)]
+pub struct Ipv4Address([u8; 4]);
+
+impl Ipv4Address {
+    pub fn new(address: &str) -> Result<Ipv4Address, Error> {
+        let octets: Vec<u8> = address
+            .split('.')
+            .map(|octet| octet.parse().unwrap())
+            .collect();
+        if octets.len() != 4 {
+            return Err(anyhow!("Invalid IPv4 address"));
+        }
+        Ok(Ipv4Address([octets[0], octets[1], octets[2], octets[3]]))
+    }
+}

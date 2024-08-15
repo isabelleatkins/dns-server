@@ -1,0 +1,9 @@
+
+; domain hosts includes NS and MX records defined above
+; plus any others required
+; for instance a user query for the A RR of joe.example.com will
+; return the IPv4 address 192.168.254.6 from this zone file
+ns1        IN      A       192.168.254.2
+mail       IN      A       192.168.254.4
+joe        IN      A       192.168.254.6
+www        IN      A       192.168.254.7

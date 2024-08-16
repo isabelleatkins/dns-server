@@ -22,10 +22,16 @@ fn main() {
                 for i in 0..2 {
                     println!("{:02x} ", buf[i]);
                 }
-
-                let dns_answer = DnsMessage::answer(&buf);
+                let name = request.get_question().get_qname().to_name();
+                println!("Name: {:?}", name);
+                let record = records.get_record(&name);
+                if record.is_none() {
+                    eprintln!("Record not found for name: {:?}", name);
+                }
+                let dns_answer = DnsMessage::answer(request, record);
                 let mut buffer = BytesMut::with_capacity(512);
                 dns_answer.write(&mut buffer);
+                debug_bytes(&buffer);
                 udp_socket
                     .send_to(&buffer, source)
                     .expect("Failed to send response");
@@ -38,7 +44,7 @@ fn main() {
     }
 }
 
-fn setup() -> Vec<Box<dyn Record>> {
+fn setup() -> RecordDatabase {
     let mut records: Vec<Box<dyn Record>> = vec![];
     let args = std::env::args().collect::<Vec<String>>();
     if args.len() != 2 {
@@ -80,7 +86,30 @@ fn setup() -> Vec<Box<dyn Record>> {
             }
         }
     }
-    records
+    RecordDatabase::new(records)
+}
+
+struct RecordDatabase {
+    records: Vec<Box<dyn Record>>,
+}
+
+impl RecordDatabase {
+    fn new(records: Vec<Box<dyn Record>>) -> RecordDatabase {
+        RecordDatabase { records }
+    }
+    fn get_record(&self, name: &Name) -> Option<&Box<dyn Record>> {
+        self.records.iter().find(|record| record.get_name() == name)
+    }
+}
+
+fn debug_bytes(bytes: &[u8]) {
+    for (i, byte) in bytes.iter().enumerate() {
+        print!("{:02x} ", byte);
+        if (i + 1) % 16 == 0 {
+            println!();
+        }
+    }
+    println!();
 }
 #[cfg(test)]
 mod tests {

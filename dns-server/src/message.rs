@@ -11,24 +11,36 @@ pub struct DnsMessage {
 }
 
 impl DnsMessage {
-    pub fn answer(request: &[u8]) -> DnsMessage {
-        DnsMessage {
-            header: Header::from_request(request),
-            question: Question::from_request(request),
-            answer: Answer::from_request(request), //TODO
-        }
+    pub fn answer(request: DnsMessage, record: Option<&Box<dyn Record>>) -> DnsMessage {
+        let mut whole_answer = request;
+        whole_answer.header.ancount = 1; // Needed to add this - without it answer section doesn't appear, and it just ignores the last 26 bytes
+        whole_answer.answer = Answer::new(record);
+        println!("Answer: {:?}", whole_answer.answer);
+        //whole_answer.answer = Answer::from_request(request, record);
+        // = DnsMessage {
+        //     header: Header::from_request(request),
+        //     question: Question::from_request(request),
+        //     answer: Answer::from_request(request), //TODO
+        // }
+        whole_answer
     }
     pub fn write(&self, buf: &mut BytesMut) {
         self.header.write(buf);
         self.question.write(buf);
+        if let Some(answer) = &self.answer {
+            answer.write(buf);
+        }
+    }
+    pub fn get_question(&self) -> &Question {
+        &self.question
     }
 }
 
 #[derive(Debug)]
-struct Question {
+pub struct Question {
     name: QName,
     qtype: u16,
-    class: u16,
+    qclass: u16,
 }
 
 impl Question {
@@ -39,7 +51,7 @@ impl Question {
         }
         buf.put_u8(0); //Writes a zero length byte to indicate the end of the domain name
         buf.put_u16(self.qtype);
-        buf.put_u16(self.class);
+        buf.put_u16(self.qclass);
     }
     fn from_request(request: &[u8]) -> Question {
         let mut qname_index = 12;
@@ -56,21 +68,35 @@ impl Question {
             labels.push(Label { value: label });
             qname_index += label_length + 1;
         }
-        let qtype_value: u16 =
-            (request[qname_index + 1] as u16) << 8 | request[qname_index + 2] as u16;
+        let qtype: u16 = (request[qname_index + 1] as u16) << 8 | request[qname_index + 2] as u16;
+        let qclass: u16 = (request[qname_index + 3] as u16) << 8 | request[qname_index + 4] as u16;
         Question {
             name: QName { labels },
-            qtype: qtype_value,
-            class: 1,
+            qtype,
+            qclass, //TO DO
         }
+    }
+    pub fn get_qname(&self) -> &QName {
+        &self.name
     }
 }
 
 #[derive(Debug)]
-struct QName {
+pub struct QName {
     labels: Vec<Label>,
 }
 
+impl QName {
+    pub fn to_name(&self) -> Name {
+        let mut name = String::new();
+        for label in &self.labels {
+            name.push_str(&label.value);
+            name.push('.');
+        }
+        name.pop();
+        Name(name)
+    }
+}
 #[derive(Debug)]
 struct Label {
     value: String,
@@ -113,8 +139,8 @@ impl Into<DnsMessage> for [u8; 512] {
             labels.push(Label { value: label });
             qname_index += label_length + 1;
         }
-        let qtype_value: u16 = (self[qname_index + 1] as u16) << 8 | self[qname_index + 2] as u16;
-        let qtype = qtype_value.into();
+        let qtype: u16 = (self[qname_index + 1] as u16) << 8 | self[qname_index + 2] as u16;
+        let qclass: u16 = (self[qname_index + 3] as u16) << 8 | self[qname_index + 4] as u16;
         DnsMessage {
             header: Header {
                 id: (self[0] as u16) << 8 | self[1] as u16,
@@ -134,7 +160,7 @@ impl Into<DnsMessage> for [u8; 512] {
             question: Question {
                 name: QName { labels },
                 qtype,
-                class: 1,
+                qclass,
             },
             answer: None, //Maybe update since I guess we need to accept the creation of dns records at some point? And that would presumably use the answer field and perhaps have None for question field
         }
@@ -196,7 +222,7 @@ impl Header {
             z: 0,
             rcode: 0,
             qdcount: 1,
-            ancount: 0,
+            ancount: 1, // Need to make this one to indicate one answer in response , need update
             nscount: 0,
             arcount: 0,
         }
@@ -252,6 +278,22 @@ struct Answer {
     resource_records: Vec<ResourceRecord>,
 }
 
+impl Answer {
+    fn new(record: Option<&Box<dyn Record>>) -> Option<Answer> {
+        match record {
+            Some(record) => Some(Answer {
+                resource_records: vec![record.into_resource_record()],
+            }),
+            None => None,
+        }
+    }
+    fn write(&self, buf: &mut BytesMut) {
+        for record in &self.resource_records {
+            record.write(buf);
+        }
+    }
+}
+
 #[derive(Debug)]
 struct ResourceRecord {
     name: Name,
@@ -262,7 +304,24 @@ struct ResourceRecord {
     rdata: Vec<u8>, //Make this an actual type when looked into more
 }
 
-#[derive(Debug)]
+impl ResourceRecord {
+    fn write(&self, buf: &mut BytesMut) {
+        for label in &self.name.to_qname().labels {
+            buf.put_u8(label.value.len() as u8);
+            buf.put(label.value.as_bytes());
+        }
+        buf.put_u8(0);
+        buf.put_u16(1); // TO DO
+        buf.put_u16(1); // TO DO
+        buf.put_u32(self.ttl);
+        buf.put_u16(self.rdlength);
+        for i in 0..4 {
+            buf.put_u8(self.rdata[i]);
+        }
+    }
+}
+
+#[derive(Debug, Copy, Clone)]
 pub enum Class {
     IN = 1,
 }
@@ -278,10 +337,11 @@ impl TryFrom<&str> for Class {
 }
 
 pub trait Record {
-    fn into_resource_record(self) -> ResourceRecord;
+    fn into_resource_record(&self) -> ResourceRecord;
+    fn get_name(&self) -> &Name;
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ARecord {
     pub name: Name,
     class: Class,
@@ -293,7 +353,7 @@ impl ARecord {
     pub fn new(name: Name, class: Class, ttl: u32, address: Ipv4Address) -> ARecord {
         ARecord {
             name,
-            class: Class::IN,
+            class,
             ttl,
             address,
         }
@@ -301,9 +361,9 @@ impl ARecord {
 }
 
 impl Record for ARecord {
-    fn into_resource_record(self) -> ResourceRecord {
+    fn into_resource_record(&self) -> ResourceRecord {
         ResourceRecord {
-            name: self.name,
+            name: self.name.clone(),
             r#type: RrType::A,
             class: self.class,
             ttl: self.ttl,
@@ -311,22 +371,35 @@ impl Record for ARecord {
             rdata: self.address.0.to_vec(),
         }
     }
+    fn get_name(&self) -> &Name {
+        &self.name
+    }
 }
 #[derive(Debug)]
 enum RrType {
     A,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Name(String);
 
 impl Name {
     pub fn new(name: &str) -> Name {
         Name(name.to_string())
     }
+
+    pub fn to_qname(&self) -> QName {
+        let mut labels = vec![];
+        for label in self.0.split('.') {
+            labels.push(Label {
+                value: label.to_string(),
+            });
+        }
+        QName { labels }
+    }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Ipv4Address([u8; 4]);
 
 impl Ipv4Address {
@@ -339,5 +412,59 @@ impl Ipv4Address {
             return Err(anyhow!("Invalid IPv4 address"));
         }
         Ok(Ipv4Address([octets[0], octets[1], octets[2], octets[3]]))
+    }
+    pub fn octets(&self) -> [u8; 4] {
+        self.0
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{convert::TryFrom, vec};
+
+    #[test]
+    fn test_write_answer() {
+        let mut buf = BytesMut::with_capacity(512);
+        let record = ARecord::new(
+            Name::new("example.com"),
+            Class::IN,
+            1,
+            Ipv4Address::new("127.0.0.1").unwrap(),
+        );
+        let record: Box<dyn Record> = Box::new(record);
+        let answer = Answer::new(Some(&record)).unwrap();
+        answer.write(&mut buf);
+        assert_eq!(
+            buf.to_vec(),
+            vec![
+                7, 101, 120, 97, 109, 112, 108, 101, 3, 99, 111, 109, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0,
+                4, 127, 0, 0, 1
+            ]
+        );
+    }
+
+    #[test]
+    fn test_write_question() {
+        let mut buf = BytesMut::with_capacity(512);
+        let question = Question {
+            name: QName {
+                labels: vec![
+                    Label {
+                        value: "example".to_string(),
+                    },
+                    Label {
+                        value: "com".to_string(),
+                    },
+                ],
+            },
+            qtype: 1,
+            qclass: 1,
+        };
+        question.write(&mut buf);
+        assert_eq!(
+            buf.to_vec(),
+            vec![7, 101, 120, 97, 109, 112, 108, 101, 3, 99, 111, 109, 0, 0, 1, 0, 1]
+        );
     }
 }

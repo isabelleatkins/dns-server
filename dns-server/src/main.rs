@@ -1,6 +1,7 @@
 // Uncomment this block to pass the first stage
 use bytes::{buf, BufMut, Bytes, BytesMut};
 use message::{ARecord, Class, DnsMessage, Ipv4Address, Name, Record};
+use record_database::RecordDatabase;
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -8,43 +9,62 @@ use std::{
 };
 
 pub mod message;
+pub mod record_database;
 fn main() {
-    let records = setup();
-    println!("Starting DNS server on port 2053");
-    let udp_socket = UdpSocket::bind("127.0.0.1:2053").expect("Failed to bind to address");
-    let mut buf = [0; 512];
+    let mut server = Server::new();
+    server.run();
+}
 
-    loop {
-        match udp_socket.recv_from(&mut buf) {
-            Ok((size, source)) => {
-                let request: DnsMessage = buf.into();
-                println!("Request: {:?}", request);
-                for i in 0..2 {
-                    println!("{:02x} ", buf[i]);
+struct Server {
+    socket: UdpSocket,
+    records: RecordDatabase,
+}
+
+impl Server {
+    fn new() -> Server {
+        let records = populate_database();
+        let socket = UdpSocket::bind("127.0.0.1:2053").expect("Failed to bind to address");
+        Server { socket, records }
+    }
+
+    fn run(&mut self) {
+        let mut buf = [0; 512];
+        loop {
+            match self.socket.recv_from(&mut buf) {
+                Ok((size, source)) => {
+                    let request: DnsMessage = buf.into();
+                    println!("Request: {:?}", request);
+                    for i in 0..2 {
+                        println!("{:02x} ", buf[i]);
+                    }
+                    let name = request.get_question().get_qname().to_name();
+                    println!("Name: {:?}", name);
+                    let record = self.records.get_record(&name);
+                    if record.is_none() {
+                        eprintln!("Record not found for name: {:?}", name);
+                    }
+                    let dns_answer = DnsMessage::response(request, record);
+                    let mut buffer = BytesMut::with_capacity(512);
+                    dns_answer.write(&mut buffer);
+                    debug_bytes(&buffer);
+                    self.socket
+                        .send_to(&buffer, source)
+                        .expect("Failed to send response");
                 }
-                let name = request.get_question().get_qname().to_name();
-                println!("Name: {:?}", name);
-                let record = records.get_record(&name);
-                if record.is_none() {
-                    eprintln!("Record not found for name: {:?}", name);
+                Err(e) => {
+                    eprintln!("Error receiving data: {}", e);
+                    break;
                 }
-                let dns_answer = DnsMessage::answer(request, record);
-                let mut buffer = BytesMut::with_capacity(512);
-                dns_answer.write(&mut buffer);
-                debug_bytes(&buffer);
-                udp_socket
-                    .send_to(&buffer, source)
-                    .expect("Failed to send response");
-            }
-            Err(e) => {
-                eprintln!("Error receiving data: {}", e);
-                break;
             }
         }
     }
 }
 
-fn setup() -> RecordDatabase {
+fn handle_request(request: DnsMessage) -> DnsMessage {
+    todo!();
+}
+
+fn populate_database() -> RecordDatabase {
     let mut records: Vec<Box<dyn Record>> = vec![];
     let args = std::env::args().collect::<Vec<String>>();
     if args.len() != 2 {
@@ -89,19 +109,6 @@ fn setup() -> RecordDatabase {
     RecordDatabase::new(records)
 }
 
-struct RecordDatabase {
-    records: Vec<Box<dyn Record>>,
-}
-
-impl RecordDatabase {
-    fn new(records: Vec<Box<dyn Record>>) -> RecordDatabase {
-        RecordDatabase { records }
-    }
-    fn get_record(&self, name: &Name) -> Option<&Box<dyn Record>> {
-        self.records.iter().find(|record| record.get_name() == name)
-    }
-}
-
 fn debug_bytes(bytes: &[u8]) {
     for (i, byte) in bytes.iter().enumerate() {
         print!("{:02x} ", byte);
@@ -117,6 +124,6 @@ mod tests {
 
     #[test]
     fn test_setup() {
-        setup();
+        populate_database();
     }
 }

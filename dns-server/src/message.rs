@@ -11,7 +11,7 @@ pub struct DnsMessage {
 }
 
 impl DnsMessage {
-    pub fn answer(request: DnsMessage, record: Option<&Box<dyn Record>>) -> DnsMessage {
+    pub fn response(request: DnsMessage, record: Option<&Box<dyn Record>>) -> DnsMessage {
         let mut whole_answer = request;
         whole_answer.header.ancount = 1; // Needed to add this - without it answer section doesn't appear, and it just ignores the last 26 bytes
         whole_answer.answer = Answer::new(record);
@@ -210,21 +210,21 @@ impl Header {
         buf.put_u16(self.nscount);
         buf.put_u16(self.arcount);
     }
-    fn from_request(request: &[u8]) -> Header {
+    fn response_from_request(request: DnsMessage) -> Header {
         Header {
-            id: (request[0] as u16) << 8 | request[1] as u16,
+            id: request.header.id,
             qr: true,
-            opcode: 0,
-            aa: false,
-            tc: false,
-            rd: false,
-            ra: false,
+            opcode: request.header.opcode,
+            aa: true,              // TO DO
+            tc: false,             // TO DO
+            rd: request.header.rd, // TO DO - this indicates that recursion was requested, the RA bit in the response should be set to indicate if the server supports recursion
+            ra: false, // TO DO - when we add support for recursion, we need to set this to true if the server supports recursion
             z: 0,
-            rcode: 0,
-            qdcount: 1,
-            ancount: 1, // Need to make this one to indicate one answer in response , need update
-            nscount: 0,
-            arcount: 0,
+            rcode: 0, // TO DO - add variety to this - its value indicates whether the response was succsess/failure / what sort of failure
+            qdcount: request.header.qdcount,
+            ancount: 1, // Need to make this one to indicate one answer in response , need update if and when add multiple answers
+            nscount: 0, // TO DO
+            arcount: 0, // Indicates the number of records in  "additional records section"
         }
     }
 }
